@@ -1,18 +1,5 @@
-# MOO Kernel
-Current eBPF-based kernel extensions affect entire systems, and
-are coarse-grained. For some use cases, like tracing, operators are
-more interested in tracing a subset of processes (e.g., belonging to a
-container) rather than all processes. While overhead from tracing is
-expected for targeted processes, we find untraced processes—those
-that are not the target of tracing—also incur performance overhead.
-To better understand this overhead, we identify and explore three
-techniques for per-process filtering for eBPF: post-eBPF, in-eBPF,
-and pre-eBPF filtering, finding that all three approaches result in
-excessive overhead on untraced processes. Finally, we propose a
-system that allows for zero-untraced-overhead per-process eBPF
-tracing by modifying kernel virtual memory mappings to present
-per-process kernel views, effectively enabling untraced processes to
-execute on the kernel as if no eBPF programs are attached.
+# Including some fixed bpf programs in Kernel
+TODO
 
 ## Project setup directly in host
 Clone this repo and its submodules
