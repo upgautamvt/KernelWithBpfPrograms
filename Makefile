@@ -2,7 +2,7 @@ BASE_PROJ ?= $(shell pwd)
 LINUX ?= ${BASE_PROJ}/linux
 SSH_PORT ?= "52222"
 DOCKER_PORT ?= "11234"
-NGINX_PORT ?= "80"
+NGINX_PORT ?= "19090"
 DOCKER := kernelwithbpfprograms
 .ALWAYS:
 

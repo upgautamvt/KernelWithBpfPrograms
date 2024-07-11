@@ -1,8 +1,6 @@
 FROM ubuntu:24.04 AS linux-builder
 
-ENV RUSTUP_HOME=/usr/local/rustup \
-    CARGO_HOME=/usr/local/cargo \
-    PATH=/linux/tools/lib/bpf/:/usr/local/cargo/bin:/linux/rust/dist/bin:$PATH \
+ENV PATH=/linux/tools/lib/bpf/:/usr/local/cargo/bin:/linux/rust/dist/bin:$PATH \
     LINUX=/linux
 
 # adding clang
@@ -62,17 +60,16 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get install -y bpftrace
 # nginx
 ENV NGINX_VERSION=1.26.1 \
     NGINX_BIN=/usr/sbin/nginx \
-    NGINX_LOG=/var/log/nginx \
     NGINX_CONF=/etc/nginx \
     NGINX_RUN=/var/www \
-    NGINX_DIRS="${NGINX_BIN} ${NGINX_LOG} ${NGINX_CONF} ${NGINX_RUN}"
+    NGINX_DIRS="${NGINX_BIN} ${NGINX_CONF} ${NGINX_RUN}"
 
 # Update and install necessary packages
 RUN apt-get update \
     && apt-get install -y vim libpcre3 libpcre3-dev libgd-dev libxml2 libxml2-dev uuid-dev xdp-tools
 
 # Create necessary directories
-RUN mkdir -p /downloads_nginx /var/www/html /etc/nginx /var/log/nginx
+RUN mkdir -p /downloads_nginx
 
 # Download, extract, configure, and install NGINX
 RUN cd /downloads_nginx \
@@ -84,11 +81,7 @@ RUN cd /downloads_nginx \
         --prefix=${NGINX_RUN}/html \
         --sbin-path=${NGINX_BIN} \
         --conf-path=${NGINX_CONF}/nginx.conf \
-        --http-log-path=${NGINX_LOG}/access.log \
-        --error-log-path=${NGINX_LOG}/error.log \
         --with-pcre \
-        --lock-path=${NGINX_LOG}/nginx.lock \
-        --pid-path=${NGINX_LOG}/nginx.pid \
         --with-http_ssl_module \
         --with-http_image_filter_module=dynamic \
         --modules-path=/etc/nginx/modules \
@@ -101,3 +94,6 @@ RUN cd /downloads_nginx \
 
 # Expose port 80
 EXPOSE 80
+
+# start like this
+# nginx -g 'daemon off;' and from another ssh-session (sudo make qemu-ssh do curl -I http://localhost:80

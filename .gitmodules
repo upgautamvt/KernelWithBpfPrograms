@@ -1,6 +1,7 @@
 [submodule "linux"]
 	path = linux
 	url = git@github.com:upgautamvt/linux.git
+	branch = master
 [submodule "bpftrace"]
 	path = bpftrace
 	url = https://github.com/bpftrace/bpftrace.git

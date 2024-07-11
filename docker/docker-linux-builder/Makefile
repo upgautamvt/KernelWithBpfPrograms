@@ -5,8 +5,8 @@ test11:
 	$(info $(BASE_PROJ))
 
 docker: Dockerfile
+	#docker build --network=host --progress=auto -t kernelwithbpfprograms .
 	docker build --no-cache --network=host --progress=auto -t kernelwithbpfprograms .
-
 
 linux:
 	docker run --rm -v ${LINUX}:/linux linux-builder make -j`nproc` bzImage 
