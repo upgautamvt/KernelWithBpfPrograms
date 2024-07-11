@@ -7,6 +7,7 @@
 #include <linux/ip.h>
 #include <linux/tcp.h>
 #include <linux/udp.h>
+#include <linux/in.h>
 
 SEC("xdp")
 int xdp_prog(struct xdp_md *ctx) {
