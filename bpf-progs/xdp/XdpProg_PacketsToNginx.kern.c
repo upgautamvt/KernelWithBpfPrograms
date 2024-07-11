@@ -36,7 +36,7 @@ int xdp_prog(struct xdp_md *ctx) {
 
         // Check if the destination port is 80 (HTTP) or 22 (SSH)
         if (tcp->dest == __constant_htons(80) || tcp->dest == __constant_htons(22)) {
-            bpf_printk("TCP traffic destined for port 80 or port 22\n");
+            //bpf_printk("TCP traffic destined for port 80 or port 22\n");
             // Implement any further filtering or actions here
             // For now, we'll just pass the packet to the Nginx server
             return XDP_PASS;
