@@ -8,7 +8,7 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get update
 RUN DEBIAN_FRONTEND=noninteractive apt-get upgrade -y
 
 RUN DEBIAN_FRONTEND=noninteractive apt-get update
-RUN DEBIAN_FRONTEND=noninteractive apt-get install --fix-missing -y git build-essential gcc g++ iproute2 net-tools lsof\
+RUN DEBIAN_FRONTEND=noninteractive apt-get install --fix-missing -y git build-essential gcc g++ \
     fakeroot libncurses5-dev libssl-dev ccache dwarves libelf-dev \
  cmake \
  libdw-dev libdwarf-dev \
@@ -66,7 +66,8 @@ ENV NGINX_VERSION=1.26.1 \
 
 # Update and install necessary packages
 RUN apt-get update \
-    && apt-get install -y vim libpcre3 libpcre3-dev libgd-dev libxml2 libxml2-dev uuid-dev xdp-tools wrk
+    && apt-get install -y vim libpcre3 libpcre3-dev libgd-dev  \
+    libxml2 libxml2-dev uuid-dev xdp-tools wrk iproute2 net-tools lsof hping3
 
 # Create necessary directories
 RUN mkdir -p /downloads_nginx

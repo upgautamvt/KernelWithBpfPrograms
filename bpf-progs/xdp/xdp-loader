@@ -7,4 +7,66 @@ Since xdp program we attach with eth0, we need to guarantee our packet goes thro
 
 Run nginx: #    nginx -g 'daemon off;' and from another ssh-session
  (sudo make qemu-ssh do curl -I http://localhost:80
-Then to nginx macro benchmark as: wrk -t6 -c200 -d45s http://localhost:80/index.html
+Then to nginx macro benchmark as: wrk -t6 -c200 -d30s http://localhost:80/index.html
+
+to unload:  xdp-loader unload -a eth0
+
+
+cat /sys/kernel/debug/tracing/trace
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Note: everytime I found, between vanilla kernel vs kernel with xdp program loaded, kernel with xdp program loaded has
+higher throughput and low latency.
+
+
+root@q:/kernelwithbpfprograms-kernel/bpf-progs/xdp# bpftool prog show
+root@q:/kernelwithbpfprograms-kernel/bpf-progs/xdp# wrk -t6 -c200 -d30s http://localhost:80/index.html
+Running 30s test @ http://localhost:80/index.html
+  6 threads and 200 connections
+  Thread Stats   Avg      Stdev     Max   +/- Stdev
+    Latency    47.32ms   94.01ms   1.99s    98.64%
+    Req/Sec     0.85k   216.71     3.91k    93.95%
+  150205 requests in 30.02s, 122.19MB read
+  Socket errors: connect 0, read 0, write 0, timeout 51
+Requests/sec:   5004.17
+Transfer/sec:      4.07MB
+root@q:/kernelwithbpfprograms-kernel/bpf-progs/xdp# xdp-loader load eth0 XdpProg_PacketsToNginx.kern.o --section xdp
+root@q:/kernelwithbpfprograms-kernel/bpf-progs/xdp# bpftool prog show
+66: xdp  name xdp_dispatcher  tag 4d7e87c0d30db711  gpl
+        loaded_at 2024-07-11T18:42:10+0000  uid 0
+        xlated 184B  jited 147B  memlock 4096B  map_ids 21
+        btf_id 40
+75: ext  name xdp_prog  tag 9384fe76f4d00bca  gpl
+        loaded_at 2024-07-11T18:42:10+0000  uid 0
+        xlated 240B  jited 162B  memlock 4096B  map_ids 24
+        btf_id 43
+root@q:/kernelwithbpfprograms-kernel/bpf-progs/xdp# wrk -t6 -c200 -d30s http://localhost:80/index.html
+Running 30s test @ http://localhost:80/index.html
+  6 threads and 200 connections
+  Thread Stats   Avg      Stdev     Max   +/- Stdev
+    Latency    45.56ms   93.17ms   1.98s    98.65%
+    Req/Sec     0.89k   194.29     2.76k    87.63%
+  157020 requests in 30.02s, 127.73MB read
+  Socket errors: connect 0, read 0, write 0, timeout 53
+Requests/sec:   5230.70
+Transfer/sec:      4.26MB
