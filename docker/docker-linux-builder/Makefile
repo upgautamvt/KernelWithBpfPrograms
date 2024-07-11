@@ -5,7 +5,7 @@ test11:
 	$(info $(BASE_PROJ))
 
 docker: Dockerfile
-	docker build --no-cache --network=host --progress=auto -t moo .
+	docker build --no-cache --network=host --progress=auto -t kernelwithbpfprograms .
 
 
 linux:

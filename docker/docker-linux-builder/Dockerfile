@@ -1,17 +1,17 @@
-FROM ubuntu:24.04 as Linux-builder
+FROM ubuntu:24.04 AS linux-builder
 
 ENV RUSTUP_HOME=/usr/local/rustup \
     CARGO_HOME=/usr/local/cargo \
     PATH=/linux/tools/lib/bpf/:/usr/local/cargo/bin:/linux/rust/dist/bin:$PATH \
-    LD_LIBRARY_PATH=/linux/tools/lib/bpf:$LD_LIBRARY_PATH \
-    LINUX=/linux 
+    LINUX=/linux
 
 # adding clang
 RUN DEBIAN_FRONTEND=noninteractive apt-get update
 RUN DEBIAN_FRONTEND=noninteractive apt-get upgrade -y
 
 RUN DEBIAN_FRONTEND=noninteractive apt-get update
-RUN DEBIAN_FRONTEND=noninteractive apt-get install --fix-missing -y git build-essential gcc g++ fakeroot libncurses5-dev libssl-dev ccache dwarves libelf-dev \
+RUN DEBIAN_FRONTEND=noninteractive apt-get install --fix-missing -y git build-essential gcc g++  \
+    fakeroot libncurses5-dev libssl-dev ccache dwarves libelf-dev \
  cmake \
  libdw-dev libdwarf-dev \
  bpfcc-tools libbpfcc-dev libbpfcc \
@@ -22,8 +22,9 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get install --fix-missing -y git build-es
  flex bison \
  rsync \
  kmod \
+ curl \
  libcap-dev libdisasm-dev binutils-dev unzip \
- pkg-config lsb-release wget software-properties-common gnupg zlib1g 
+ pkg-config lsb-release wget software-properties-common gnupg zlib1g zlib1g-dev
 
 RUN wget https://apt.llvm.org/llvm.sh
 RUN chmod +x llvm.sh
@@ -41,20 +42,62 @@ RUN ln -s /usr/bin/opt-18 /usr/bin/opt
 
 # Qemu
 RUN DEBIAN_FRONTEND=noninteractive apt-get update
-RUN DEBIAN_FRONTEND=noninteractive apt-get install -y qemu-kvm libvirt-clients libvirt-daemon-system bridge-utils virtinst libvirt-daemon xterm attr busybox openssh-server
+RUN DEBIAN_FRONTEND=noninteractive apt-get install -y qemu-kvm libvirt-clients libvirt-daemon-system  \
+    bridge-utils virtinst libvirt-daemon xterm attr busybox openssh-server
 
 RUN DEBIAN_FRONTEND=noninteractive apt-get update
-RUN DEBIAN_FRONTEND=noninteractive apt-get install -y openssh-client openssh-server 
+RUN DEBIAN_FRONTEND=noninteractive apt-get install -y openssh-client openssh-server
 
 # Debugging
 RUN DEBIAN_FRONTEND=noninteractive apt-get update
-RUN DEBIAN_FRONTEND=noninteractive apt-get install -y tmux gdb 
+RUN DEBIAN_FRONTEND=noninteractive apt-get install -y tmux gdb
 
 RUN DEBIAN_FRONTEND=noninteractive apt-get update
-RUN DEBIAN_FRONTEND=noninteractive apt-get install -y strace 
+RUN DEBIAN_FRONTEND=noninteractive apt-get install -y strace
 
-# Moo kernel bcc and bpftrace
+# kernelwithbpfprograms kernel bcc and bpftrace
 RUN DEBIAN_FRONTEND=noninteractive apt-get update
-RUN DEBIAN_FRONTEND=noninteractive apt-get install -y bpftrace 
+RUN DEBIAN_FRONTEND=noninteractive apt-get install -y bpftrace
 
+# nginx
+ENV NGINX_VERSION=1.26.1 \
+    NGINX_BIN=/usr/sbin/nginx \
+    NGINX_LOG=/var/log/nginx \
+    NGINX_CONF=/etc/nginx \
+    NGINX_RUN=/var/www \
+    NGINX_DIRS="${NGINX_BIN} ${NGINX_LOG} ${NGINX_CONF} ${NGINX_RUN}"
 
+# Update and install necessary packages
+RUN apt-get update \
+    && apt-get install -y vim libpcre3 libpcre3-dev libgd-dev libxml2 libxml2-dev uuid-dev xdp-tools
+
+# Create necessary directories
+RUN mkdir -p /downloads_nginx /var/www/html /etc/nginx /var/log/nginx
+
+# Download, extract, configure, and install NGINX
+RUN cd /downloads_nginx \
+    && wget https://nginx.org/download/nginx-${NGINX_VERSION}.tar.gz \
+    && tar xvzf ./nginx-${NGINX_VERSION}.tar.gz -C . \
+    && cd nginx-${NGINX_VERSION} \
+    && export CFLAGS="-Wno-error" \
+    && ./configure \
+        --prefix=${NGINX_RUN}/html \
+        --sbin-path=${NGINX_BIN} \
+        --conf-path=${NGINX_CONF}/nginx.conf \
+        --http-log-path=${NGINX_LOG}/access.log \
+        --error-log-path=${NGINX_LOG}/error.log \
+        --with-pcre \
+        --lock-path=${NGINX_LOG}/nginx.lock \
+        --pid-path=${NGINX_LOG}/nginx.pid \
+        --with-http_ssl_module \
+        --with-http_image_filter_module=dynamic \
+        --modules-path=/etc/nginx/modules \
+        --with-http_v2_module \
+        --with-stream=dynamic \
+        --with-http_addition_module \
+        --with-http_mp4_module \
+    && make \
+    && make install
+
+# Expose port 80
+EXPOSE 80

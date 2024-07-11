@@ -5,8 +5,8 @@ TODO
 Clone this repo and its submodules
 
 ```c
-https://github.com/rosalab/moo-kernel
-cd moo-kernel
+https://github.com/rosalab/kernelwithbpfprograms-kernel
+cd kernelwithbpfprograms-kernel
 git submodule update --init --recursive --progress
 ```
 

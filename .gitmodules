@@ -1,7 +1,7 @@
 [submodule "linux"]
 	path = linux
 	url = git@github.com:rosalab/linux.git
-	branch = moo-kernel-base 
+	branch = kernelwithbpfprograms-kernel-base
 [submodule "bpftrace"]
 	path = bpftrace
 	url = https://github.com/bpftrace/bpftrace.git

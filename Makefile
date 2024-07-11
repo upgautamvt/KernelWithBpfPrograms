@@ -2,7 +2,8 @@ BASE_PROJ ?= $(shell pwd)
 LINUX ?= ${BASE_PROJ}/linux
 SSH_PORT ?= "52222"
 DOCKER_PORT ?= "11234"
-DOCKER := moo
+NGINX_PORT ?= "80"
+DOCKER := kernelwithbpfprograms
 .ALWAYS:
 
 all: vmlinux fs samples
@@ -13,13 +14,14 @@ docker: .ALWAYS
 qemu-run: 
 	docker run --privileged --rm \
 	--device=/dev/kvm:/dev/kvm --device=/dev/net/tun:/dev/net/tun \
-	-v ${BASE_PROJ}:/moo-kernel -v ${LINUX}:/linux \
+	-v ${BASE_PROJ}:/kernelwithbpfprograms-kernel -v ${LINUX}:/linux \
 	-w /linux \
 	-e LD_LIBRARY_PATH=/linux/tools/lib/bpf:${LD_LIBRARY_PATH} \
 	-p 127.0.0.1:${SSH_PORT}:52222 \
 	-p 127.0.0.1:${DOCKER_PORT}:1234 \
+	-p 127.0.0.1:${NGINX_PORT}:80 \
 	-it ${DOCKER}:latest \
-	 /moo-kernel/q-script/yifei-q -s
+	 /kernelwithbpfprograms-kernel/q-script/yifei-q -s
 
 # connect running qemu by ssh
 
