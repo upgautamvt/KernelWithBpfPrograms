@@ -15,6 +15,9 @@ to unload:  xdp-loader unload -a eth0
 cat /sys/kernel/debug/tracing/trace
 
 
+I developed a python script that basically runs wrk X times and then generates both throughput and latency graph
+Then I used rclone to upload generated graph into my google drive folder.
+
 Result (increased throughput and lower latency in vanilla kernel)
 
 root@q:/kernelwithbpfprograms-kernel/bpf-progs/xdp# bpftool prog show

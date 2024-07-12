@@ -99,3 +99,14 @@ EXPOSE 80
 # start like this
 # nginx -g 'daemon off;' and from another ssh-session (sudo make qemu-ssh do curl -I http://localhost:80
 # wrk -t6 -c200 -d45s http://localhost:80/index.html
+
+
+# Install Python3, venv, and other necessary libraries
+RUN apt-get update \
+    && apt-get install -y python3 python3-pip python3-venv iputils-arping iputils-ping iputils-tracepath rclone
+
+# Create a virtual environment for Python packages
+RUN python3 -m venv /opt/venv
+
+# Activate the virtual environment and install the required Python packages
+RUN /opt/venv/bin/pip install matplotlib numpy

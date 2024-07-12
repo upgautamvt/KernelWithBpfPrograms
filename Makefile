@@ -22,7 +22,6 @@ qemu-run:
 	 /kernelwithbpfprograms-kernel/q-script/yifei-q -s
 
 # connect running qemu by ssh
-
 qemu-ssh:
 	ssh -o "UserKnownHostsFile=/dev/null" -o "StrictHostKeyChecking=no" -t root@127.0.0.1 -p 52222
 
