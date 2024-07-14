@@ -103,7 +103,8 @@ EXPOSE 80
 
 # Install Python3, venv, and other necessary libraries
 RUN apt-get update \
-    && apt-get install -y python3 python3-pip python3-venv iputils-arping iputils-ping iputils-tracepath rclone
+    && apt-get install -y python3 python3-pip python3-venv  \
+    iputils-arping iputils-ping iputils-tracepath rclone
 
 # Create a virtual environment for Python packages
 RUN python3 -m venv /opt/venv

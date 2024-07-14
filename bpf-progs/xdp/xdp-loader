@@ -53,3 +53,15 @@ Requests/sec:   5132.78
 Transfer/sec:      4.18MB
 
 
+Let's do 1 thread 1 connection run for 60 seconds.
+
+root@q:/kernelwithbpfprograms-kernel/bpf-progs/xdp# wrk -t1 -c1 -d30s http://10.0.2.15:80/index.html
+Running 30s test @ http://10.0.2.15:80/index.html
+  6 threads and 200 connections
+  Thread Stats   Avg      Stdev     Max   +/- Stdev
+    Latency    45.83ms   91.69ms   1.99s    98.71%
+    Req/Sec     0.87k   202.21     3.27k    89.93%
+  154059 requests in 30.01s, 125.33MB read
+  Socket errors: connect 0, read 0, write 0, timeout 56
+Requests/sec:   5132.78
+Transfer/sec:      4.18MB

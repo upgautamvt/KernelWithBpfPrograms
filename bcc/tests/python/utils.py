@@ -22,7 +22,7 @@ def has_executable(name):
 # "known to fail". These tests legitimately fail and represent actual bugs, but
 # as these are already documented the test status can be "green" without these
 # tests, similar to catch2's [!mayfail] tag.
-# This is done using the existing python unittest concept of an "expected failure",
+# This is done using the existing python sample concept of an "expected failure",
 # but it is only done after the fact, if the test fails or raises an exception.
 # It gives all tests a chance to succeed, but if they fail it logs them and
 # continues.

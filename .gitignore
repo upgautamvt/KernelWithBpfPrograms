@@ -1,7 +1,6 @@
 .vscode
 .cargo
 .idea
-linux/
 venv/
 !.gitignore
 !samples/*/.cargo
