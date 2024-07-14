@@ -12,7 +12,7 @@ iteration_numbers = []
 # Run wrk command for 20 iterations
 for i in range(1, 21):
     # Construct and run the wrk command
-    command = f"wrk -t1 -c1 -d10s http://localhost:80"
+    command = f"wrk -t5 -c200 -d60s http://localhost:80"
     process = subprocess.Popen(command.split(), stdout=subprocess.PIPE)
     output, _ = process.communicate()
     wrk_output = output.decode('utf-8')
