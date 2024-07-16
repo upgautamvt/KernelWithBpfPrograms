@@ -1,0 +1,9 @@
+terraform to orchestrate VMs, network etc.
+make memcached client/server
+configure lan
+attach xdp to server's nic
+send packets from client to server
+track server's throughput using memaslap tool
+
+
+Note: inside the images directory, we need to have all .img files
