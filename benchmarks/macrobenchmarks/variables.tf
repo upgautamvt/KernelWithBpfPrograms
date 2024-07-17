@@ -20,10 +20,9 @@ description = "image for the base vm"
   default     = "vanilla_kernel_root.img"
 }
 
-# xdp_kernel_root
 variable "xdp_kernel_image" {
 description = "image for the naive vm"
-  default     = "vanilla_kernel_root.img"
+  default     = "xdp_kernel_root.img"
 }
 
 variable vm_vcpu {

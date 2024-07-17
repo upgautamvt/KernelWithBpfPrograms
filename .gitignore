@@ -6,3 +6,5 @@ venv/
 !samples/*/.cargo
 config/
 **/*.img
+**/*.terraform.lock.*
+**/*.terraform/
