@@ -73,6 +73,10 @@ resource "libvirt_volume" "qcow2-xdp_kernel" {
   #  127.0.0.1   localhost
   #  192.168.1.100 client.local client
 
+# hashed password has prefix to tell different hashing algorithms
+# During login, the system checks hashed password stored in /etc/shadow file
+# and based on this prefix system compares the provided password
+
 resource "libvirt_cloudinit_disk" "cloudinit-client" {
   name = "cloudinit_client.iso"
   pool = libvirt_pool.storage_pool.name # iso image is also in the same storage pool
@@ -86,7 +90,7 @@ ssh_pwauth: 1
 timezone: 'America/New_York'
 users:
   - name: user1
-    passwd: password1
+    passwd: $y$j9T$B./uCI0iCE/qwni2D2ph0.$FM0HevqIgg6P.Daq48tO3MWgsvKZAQxkO3Dd5dPc7k7
     home: /home/user1
     shell: /bin/bash
     sudo: ALL=(ALL) NOPASSWD:ALL
@@ -122,7 +126,7 @@ ssh_pwauth: 1
 timezone: 'America/New_York'
 users:
   - name: user1
-    passwd: password1
+    passwd: $y$j9T$B./uCI0iCE/qwni2D2ph0.$FM0HevqIgg6P.Daq48tO3MWgsvKZAQxkO3Dd5dPc7k7
     home: /home/user1
     shell: /bin/bash
     sudo: ALL=(ALL) NOPASSWD:ALL
@@ -145,7 +149,7 @@ ssh_pwauth: 1
 timezone: 'America/New_York'
 users:
   - name: user1
-    passwd: password1
+    passwd: $y$j9T$B./uCI0iCE/qwni2D2ph0.$FM0HevqIgg6P.Daq48tO3MWgsvKZAQxkO3Dd5dPc7k7
     home: /home/user1
     shell: /bin/bash
     sudo: ALL=(ALL) NOPASSWD:ALL
