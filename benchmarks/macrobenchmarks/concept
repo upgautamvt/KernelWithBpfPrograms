@@ -7,3 +7,52 @@ track server's throughput using memaslap tool
 
 
 Note: inside the images directory, we need to have all .img files
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+The libvirt_volume and libvirt_cloudinit_disk resources in the context of Libvirt (a toolkit to manage virtualization platforms) serve different purposes, primarily related to storage management and cloud-init configuration.
+libvirt_volume
+
+    Purpose: Manages storage volumes.
+    Use Case: Creating, managing, and manipulating storage volumes that are used by virtual machines (VMs).
+    Functionality:
+        Create: You can define a volume with specific size, format, and location.
+        Attach: Volumes can be attached to VMs as block devices.
+        Lifecycle Management: Allows for creation, deletion, and resizing of volumes.
+        Storage Pools: Volumes are typically part of storage pools, which are collections of storage devices or files managed by Libvirt.
+
+libvirt_cloudinit_disk
+
+    Purpose: Creates a disk image containing cloud-init metadata.
+    Use Case: Configuring VMs on initial boot, typically for automated instance initialization and setup.
+    Functionality:
+        Cloud-Init: Used to pass user data and metadata to VMs. This can include things like SSH keys, scripts, or configuration details.
+        Configuration Data: Allows you to specify user-data, meta-data, and network-config which will be used by cloud-init within the VM.
+        Temporary Disk: This is a temporary disk attached to a VM that is used only during the initial boot to perform configuration tasks.
+
+Comparison and Use in Virtual Machine Management
+
+    Primary Function:
+        libvirt_volume: Focused on providing storage volumes for general use within VMs.
+        libvirt_cloudinit_disk: Focused on the initialization and configuration of VMs using cloud-init.
+
+    Usage Scenarios:
+        Use libvirt_volume when you need additional storage for your VMs that persists across reboots and can be managed independently.
+        Use libvirt_cloudinit_disk when you need to initialize and configure VMs automatically upon their first boot, typically in cloud or large-scale deployment scenarios.
+
+    Integration:
+        Both resources can be used together. A VM might use libvirt_cloudinit_disk for its initial setup and then use libvirt_volume for additional, persistent storage.
+

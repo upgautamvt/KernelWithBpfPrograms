@@ -1,6 +1,3 @@
-# Including some fixed bpf programs in Kernel
-TODO
-
 ## Project setup directly in host
 Clone this repo and its submodules
 

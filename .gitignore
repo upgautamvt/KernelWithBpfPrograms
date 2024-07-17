@@ -5,3 +5,4 @@ venv/
 !.gitignore
 !samples/*/.cargo
 config/
+**/*.img

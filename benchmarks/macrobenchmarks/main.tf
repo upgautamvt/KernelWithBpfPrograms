@@ -57,10 +57,25 @@ resource "libvirt_volume" "qcow2-xdp_kernel" {
 
 
 # Manages a cloud-init ISO disk that can be used to customize a domain during first boot.
-# libvirt_cloudinit_disk is defined in terraform
+# they are used to pass user data other metadata to VMs.
+# they are used for setups
+
+# Standard definition as,
+# resource "libvirt_cloudinit_disk" "commoninit" {
+#   name       = "commoninit.iso"
+#   user_data  = file("cloud_init.cfg")
+#   meta_data  = file("meta_data.cfg")
+#   network_config = file("network_config.cfg")
+# }
+
+
+#  because of true it makes /etc/hosts in VM like,
+  #  127.0.0.1   localhost
+  #  192.168.1.100 client.local client
+
 resource "libvirt_cloudinit_disk" "cloudinit-client" {
   name = "cloudinit_client.iso"
-  pool = libvirt_pool.storage_pool.name
+  pool = libvirt_pool.storage_pool.name # iso image is also in the same storage pool
   user_data = <<EOF
 #cloud-config
 fqdn: client.${var.vm_domain}
@@ -70,9 +85,9 @@ package_upgrade: true
 ssh_pwauth: 1
 timezone: 'America/New_York'
 users:
-  - name: moo
-    passwd: $6$.w.RA7.g2CMWN/Zx$eK79F4Aub3PRSP8qdMKaaDe7S/deyy38bmlKAtjOJosN5o2Orb/gYZCH1f1LXPI5wpJzi.VO9fVkrrx2iEFIU1 
-    home: /home/moo
+  - name: user1
+    passwd: password1
+    home: /home/user1
     shell: /bin/bash
     sudo: ALL=(ALL) NOPASSWD:ALL
     lock_passwd: false
@@ -80,6 +95,19 @@ users:
     groups: sudo, users, admin
 EOF
 }
+
+# <<EOF is a heredoc syntax that allows to include multiline string
+# cloud-config is a standard header used by cloud-init to identify the content format.
+# enable ssh login using password ssh_pwauth
+# package_update means apt get upgrade
+# manage_etc_hosts = true means cloud-init configuration is used to update /etc/hosts of VM
+
+# below two lines are part of the cloud-init config
+# fqdn: vanilla_kernel.${var.vm_domain}
+# manage_etc_hosts: true
+#  because of true it makes /etc/hosts in VM like,
+  #  127.0.0.1   localhost
+  #  192.168.1.100 vanilla_kernel.local vanilla_kernel
 
 resource "libvirt_cloudinit_disk" "cloudinit-vanilla_kernel" {
   name = "cloudinit_vanilla_kernel.iso"
@@ -93,9 +121,9 @@ package_upgrade: true
 ssh_pwauth: 1
 timezone: 'America/New_York'
 users:
-  - name: moo
-    passwd: $6$.w.RA7.g2CMWN/Zx$eK79F4Aub3PRSP8qdMKaaDe7S/deyy38bmlKAtjOJosN5o2Orb/gYZCH1f1LXPI5wpJzi.VO9fVkrrx2iEFIU1 
-    home: /home/moo
+  - name: user1
+    passwd: password1
+    home: /home/user1
     shell: /bin/bash
     sudo: ALL=(ALL) NOPASSWD:ALL
     lock_passwd: false
@@ -116,9 +144,9 @@ package_upgrade: true
 ssh_pwauth: 1
 timezone: 'America/New_York'
 users:
-  - name: moo
-    passwd: $6$.w.RA7.g2CMWN/Zx$eK79F4Aub3PRSP8qdMKaaDe7S/deyy38bmlKAtjOJosN5o2Orb/gYZCH1f1LXPI5wpJzi.VO9fVkrrx2iEFIU1 
-    home: /home/moo
+  - name: user1
+    passwd: password1
+    home: /home/user1
     shell: /bin/bash
     sudo: ALL=(ALL) NOPASSWD:ALL
     lock_passwd: false
@@ -129,6 +157,8 @@ EOF
 
 # define network
 # see https://github.com/dmacvicar/terraform-provider-libvirt/blob/v0.7.6/website/docs/r/network.markdown
+# local_only = false: This setting allows DNS queries to be forwarded
+# to external DNS servers if they cannot be resolved locally.
 resource "libvirt_network" "net" {
   name      = "net"
   mode      = "nat"
@@ -144,12 +174,14 @@ resource "libvirt_network" "net" {
 }
 
 
-# this is like actual vm
+# libvirt_domain is actually a VM
 resource "libvirt_domain" "domain-client" {
   name   = "client"
   memory = var.vm_memory
   vcpu   = var.vm_vcpu
 
+  # you don't see id here, but when we do terraform plan, it will have id
+  # defined for libvirt_cloudinit_disk.cloudinit-client object
   cloudinit = libvirt_cloudinit_disk.cloudinit-client.id
 
   network_interface {
@@ -233,22 +265,28 @@ resource "libvirt_domain" "domain-xdp_kernel" {
     addresses      = ["192.168.64.4"]
   }
 
+  # this console device emulates serial port
   console {
     type        = "pty"
     target_port = "0"
     target_type = "serial"
   }
 
+  # pty means pseudo-terminal allows to connect to VM through terminal console
+  # "virtio": Virtio is a virtualization standard for network and disk
+  # device drivers. It provides high-performance I/O by para-virtualizing
+  # the devices.
   console {
     type        = "pty"
-    target_type = "virtio"
     target_port = "1"
+    target_type = "virtio"
   }
 
   disk {
     volume_id = libvirt_volume.qcow2-xdp_kernel.id
   }
 
+  # using vm display output via SPICE protocol
   graphics {
     type        = "spice"
     listen_type = "address"

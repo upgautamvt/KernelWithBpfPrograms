@@ -42,7 +42,7 @@ variable vm_disksize {
 
 variable vm_domain {
   description = "FQDN for the network"
-  default = "xdp_kernel.local"
+  default = "local"
 }
 
 # VMs
