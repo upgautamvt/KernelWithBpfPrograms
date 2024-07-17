@@ -8,3 +8,7 @@ config/
 **/*.img
 **/*.terraform.lock.*
 **/*.terraform/
+**/*.zst
+**/*.out
+**/*.tfstate
+**/*.tfstate*
