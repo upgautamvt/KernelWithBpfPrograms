@@ -20,9 +20,9 @@ description = "image for the base vm"
   default     = "moo-base_root.img"
 }
 
-variable "moo_naive_image" {
-description = "image for the naive vm"
-  default     = "moo-naive_root.img"
+variable "moo_xdp_image" {
+description = "image for the xdp vm"
+  default     = "moo-xdp_root.img"
 }
 
 variable vm_vcpu {

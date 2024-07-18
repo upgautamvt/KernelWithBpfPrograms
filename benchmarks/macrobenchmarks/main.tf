@@ -28,11 +28,11 @@ resource "libvirt_volume" "qcow2-moo-base" {
   source = var.moo_base_image
 }
 
-resource "libvirt_volume" "qcow2-moo-naive" {
-  name = "moo-naive_root.img"
+resource "libvirt_volume" "qcow2-moo-xdp" {
+  name = "moo-xdp_root.img"
   pool = libvirt_pool.moo-pool.name
   format = "qcow2"
-  source = var.moo_naive_image
+  source = var.moo_xdp_image
 }
 
 resource "libvirt_cloudinit_disk" "cloudinit-moo-client" {
@@ -81,12 +81,12 @@ users:
 EOF
 }
 
-resource "libvirt_cloudinit_disk" "cloudinit-moo-naive" {
-  name = "cloudinit_moo-naive.iso"
+resource "libvirt_cloudinit_disk" "cloudinit-moo-xdp" {
+  name = "cloudinit_moo-xdp.iso"
   pool = libvirt_pool.moo-pool.name
   user_data = <<EOF
 #cloud-config
-fqdn: moo-naive.${var.vm_domain}
+fqdn: moo-xdp.${var.vm_domain}
 manage_etc_hosts: true
 package_update: true
 package_upgrade: true
@@ -193,17 +193,17 @@ resource "libvirt_domain" "domain-moo-base" {
   }
 }
 
-resource "libvirt_domain" "domain-moo-naive" {
-  name   = "moo-naive"
+resource "libvirt_domain" "domain-moo-xdp" {
+  name   = "moo-xdp"
   memory = var.vm_memory
   vcpu   = var.vm_vcpu
 
-  cloudinit = libvirt_cloudinit_disk.cloudinit-moo-naive.id
+  cloudinit = libvirt_cloudinit_disk.cloudinit-moo-xdp.id
 
   network_interface {
     network_name   = "moo-net"
     wait_for_lease = true
-    hostname       = "moo-naive"
+    hostname       = "moo-xdp"
     addresses      = ["192.168.64.4"]
   }
 
@@ -220,7 +220,7 @@ resource "libvirt_domain" "domain-moo-naive" {
   }
 
   disk {
-    volume_id = libvirt_volume.qcow2-moo-naive.id
+    volume_id = libvirt_volume.qcow2-moo-xdp.id
   }
 
   graphics {
