@@ -1,0 +1,15 @@
+sudo apt-get update && sudo apt-get upgrade -y && sudo apt-get install --fix-missing -y git build-essential
+gcc g++ fakeroot libncurses5-dev libssl-dev ccache dwarves libelf-dev cmake libdw-dev libdwarf-dev bpfcc-tools
+libbpfcc-dev libbpfcc linux-headers-generic libtinfo-dev libstdc++-11-dev libstdc++-12-dev libstdc++-13-dev
+libstdc++-14-dev bc flex bison rsync kmod curl libcap-dev libdisasm-dev binutils-dev unzip pkg-config lsb-release
+wget software-properties-common gnupg zlib1g zlib1g-dev && sudo wget https://apt.llvm.org/llvm.sh &&
+sudo chmod +x llvm.sh && sudo ./llvm.sh 18 && sudo ln -s /usr/bin/clang-18 /usr/bin/clang && sudo
+ln -s /usr/bin/clang++-18 /usr/bin/clang++ && sudo ln -s /usr/bin/ld.lld-18 /usr/bin/ld.lld &&
+sudo ln -s /usr/bin/llvm-ar-18 /usr/bin/llvm-ar && sudo ln -s /usr/bin/llvm-strip-18 /usr/bin/llvm-strip &&
+sudo ln -s /usr/bin/llvm-objdump-18 /usr/bin/llvm-objdump && sudo ln -s /usr/bin/llc-18 /usr/bin/llc &&
+sudo ln -s /usr/bin/llvm-readelf-18 /usr/bin/llvm-readelf && sudo ln -s /usr/bin/llvm-dis-18 /usr/bin/llvm-dis &&
+sudo ln -s /usr/bin/opt-18 /usr/bin/opt && sudo apt-get install -y qemu-kvm libvirt-clients libvirt-daemon-system
+bridge-utils virtinst libvirt-daemon xterm attr busybox openssh-server && sudo apt-get install -y openssh-client
+openssh-server tmux gdb strace bpftrace && sudo apt-get install -y vim libpcre3 libpcre3-dev libgd-dev libxml2
+libxml2-dev uuid-dev xdp-tools wrk iproute2 net-tools lsof hping3 && sudo apt-get update &&
+sudo apt-get install -y python3 python3-pip python3-venv iputils-arping iputils-ping iputils-tracepath rclone
