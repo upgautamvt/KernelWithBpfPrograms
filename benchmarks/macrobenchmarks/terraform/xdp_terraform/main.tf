@@ -74,9 +74,7 @@ resource "libvirt_network" "net" {
 }
 
 resource "libvirt_domain" "domain_client" {
-  name   = "client"
-  memory = var.vm_memory
-  vcpu   = var.vm_vcpu
+  name   = var.vms["client"].hostname
 
   cloudinit = libvirt_cloudinit_disk.cloudinit_client.id
 
@@ -87,33 +85,33 @@ resource "libvirt_domain" "domain_client" {
     addresses = var.vms["client"].vm_ip
   }
 
-  console {
-    type        = "pty"
-    target_port = "0"
-    target_type = "serial"
-  }
-
-  console {
-    type        = "pty"
-    target_type = "virtio"
-    target_port = "1"
-  }
-
   disk {
     volume_id = libvirt_volume.qcow2_client.id
   }
 
-  graphics {
-    type        = "spice"
-    listen_type = "address"
-    autoport    = true
+  # common part
+  memory = local.common_memory_vcpu.memory
+  vcpu   = local.common_memory_vcpu.vcpu
+
+  dynamic "console" {
+    for_each = local.common_console
+    content {
+      type        = console.value.type
+      target_port = console.value.target_port
+      target_type = console.value.target_type
+    }
   }
+
+  graphics {
+    type        = local.common_graphics.type
+    listen_type = local.common_graphics.listen_type
+    autoport    = local.common_graphics.autoport
+  }
+
 }
 
 resource "libvirt_domain" "domain_base" {
-  name   = "base"
-  memory = var.vm_memory
-  vcpu   = var.vm_vcpu
+  name   = var.vms["base"].hostname
 
   cloudinit = libvirt_cloudinit_disk.cloudinit_base.id
 
@@ -124,33 +122,33 @@ resource "libvirt_domain" "domain_base" {
     addresses = var.vms["base"].vm_ip
   }
 
-  console {
-    type        = "pty"
-    target_port = "0"
-    target_type = "serial"
-  }
-
-  console {
-    type        = "pty"
-    target_type = "virtio"
-    target_port = "1"
-  }
-
   disk {
     volume_id = libvirt_volume.qcow2_base.id
   }
 
-  graphics {
-    type        = "spice"
-    listen_type = "address"
-    autoport    = true
+  # common part
+  memory = local.common_memory_vcpu.memory
+  vcpu   = local.common_memory_vcpu.vcpu
+
+  dynamic "console" {
+    for_each = local.common_console
+    content {
+      type        = console.value.type
+      target_port = console.value.target_port
+      target_type = console.value.target_type
+    }
   }
+
+  graphics {
+    type        = local.common_graphics.type
+    listen_type = local.common_graphics.listen_type
+    autoport    = local.common_graphics.autoport
+  }
+
 }
 
 resource "libvirt_domain" "domain_xdp" {
-  name   = "xdp"
-  memory = var.vm_memory
-  vcpu   = var.vm_vcpu
+  name   = var.vms["xdp"].hostname
 
   cloudinit = libvirt_cloudinit_disk.cloudinit_xdp.id
 
@@ -161,25 +159,27 @@ resource "libvirt_domain" "domain_xdp" {
     addresses = var.vms["xdp"].vm_ip
   }
 
-  console {
-    type        = "pty"
-    target_port = "0"
-    target_type = "serial"
-  }
-
-  console {
-    type        = "pty"
-    target_type = "virtio"
-    target_port = "1"
-  }
-
   disk {
     volume_id = libvirt_volume.qcow2_xdp.id
   }
 
-  graphics {
-    type        = "spice"
-    listen_type = "address"
-    autoport    = true
+  # common part
+  memory = local.common_memory_vcpu.memory
+  vcpu   = local.common_memory_vcpu.vcpu
+
+  dynamic "console" {
+    for_each = local.common_console
+    content {
+      type        = console.value.type
+      target_port = console.value.target_port
+      target_type = console.value.target_type
+    }
   }
+
+  graphics {
+    type        = local.common_graphics.type
+    listen_type = local.common_graphics.listen_type
+    autoport    = local.common_graphics.autoport
+  }
+
 }
