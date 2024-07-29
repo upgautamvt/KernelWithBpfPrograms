@@ -9,16 +9,16 @@
 
 # VM Configurations
 vms = {
-  client = {
-    hostname = "client"
+  xdp = {
+    hostname = "xdp"
     vm_ip     = ["192.168.100.2"]
   },
   base = {
     hostname = "base"
     vm_ip     = ["192.168.100.3"]
   },
-  xdp = {
-    hostname = "xdp"
+  client = {
+    hostname = "client"
     vm_ip     = ["192.168.100.4"]
   },
 }
